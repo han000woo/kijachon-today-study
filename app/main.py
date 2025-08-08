@@ -2,7 +2,7 @@ from dataclasses import asdict
 from fastapi import FastAPI, Depends
 import uvicorn as uvicorn
 
-from backend.app.common.config import conf
+from app.common.config import conf
 from database.conn import db
 from routes import index
 def create_app():
