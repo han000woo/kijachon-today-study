@@ -13,6 +13,7 @@ class Config:
 
     DB_POOL_RECYCLE: int = 900
     DB_ECHO: bool = True
+    SERVER_PORT: int = 8080
 
 
 @dataclass

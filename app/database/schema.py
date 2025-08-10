@@ -23,6 +23,7 @@ class UnderstandingLevel(PyEnum):  # 마찬가지로 PyEnum을 상속
     LOW = 1
     MEDIUM = 2
     HIGH = 3
+    PERFECT = 4
 
 
 class StudyLog(Base):
@@ -33,7 +34,9 @@ class StudyLog(Base):
     # 여기서는 여전히 SQLAlchemy의 Enum 타입을 사용합니다.
     difficulty_level = Column(Enum(DifficultyLevel), nullable=False)
     understanding_level = Column(Enum(UnderstandingLevel), nullable=False)
+    subject = Column(Text, nullable=False)
     contents = Column(Text, nullable=False)
+    category = Column(Text, nullable=False)
     memo = Column(Text)
     reference = Column(String(255))
 
@@ -42,10 +45,6 @@ class StudyLog(Base):
                f"StudyLog(" \
                f"id='{self.id}', " \
                f"contents='{self.contents[:20]}'," \
-               f"contents='{self.memo[:20]}'," \
-               f"contents='{self.difficulty_level}'," \
-               f"contents='{self.understanding_level}'," \
-               f"contents='{self.reference[:20]}'," \
                f"start_time='{self.start_time}'," \
                f"end_time='{self.end_time}')>"
 

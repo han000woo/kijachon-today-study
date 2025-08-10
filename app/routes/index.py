@@ -1,12 +1,38 @@
 import logging
 from typing import Union
-from fastapi import APIRouter, Request, Form
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Request, Form, Depends
 from fastapi.templating import Jinja2Templates
-from app.models.StudyLogVO import StudyLog
+from app.models.study_log_vo import StudyLogVO
+from app.services.study_log_service import create_study_log_entry
+from sqlalchemy.orm import Session
+from database.conn import db
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
+
+# 폼 데이터를 Pydantic 모델로 자동 변환하는 의존성
+def get_study_log_vo(
+    subject: str = Form(...),
+    start_time: str = Form(...),
+    end_time: str = Form(...),
+    category: str = Form(...),
+    difficulty: int = Form(...),
+    understanding: int = Form(...),
+    contents: str = Form(...),
+    memo: str = Form(None),
+    reference: str = Form(None)
+):
+    return StudyLogVO(
+        subject=subject,
+        start_time=start_time,
+        end_time=end_time,
+        category=category,
+        difficulty=difficulty,
+        understanding=understanding,
+        contents=contents,
+        memo=memo,
+        reference=reference
+    )
 
 @router.get("/")
 def read_root(request: Request):
@@ -15,37 +41,16 @@ def read_root(request: Request):
 
 @router.post("/submit-study")
 async def add_study_log(
-        request: Request,
-        subject: str = Form(...),
-        start_time: str = Form(...),
-        end_time: str = Form(...),
-        category: str = Form(...),
-        difficulty: int = Form(...),
-        understanding: int = Form(...),
-        content: str = Form(...),
-        memo: str = Form(None),
-        reference: str = Form(None)
+    study_log_vo: StudyLogVO = Depends(get_study_log_vo),
+    session: Session = Depends(db.get_db)
 ):
-    # 폼 데이터를 StudyLog VO 객체에 담기
-    study_log = StudyLog(
-        subject=subject,
-        start_time=start_time,
-        end_time=end_time,
-        category=category,
-        difficulty=difficulty,
-        understanding=understanding,
-        content=content,
-        memo=memo,
-        reference=reference
-    )
+    response = create_study_log_entry(session, study_log_vo)
 
-    # 여기서 데이터베이스에 `study_log` 객체를 저장하는 로직을 추가합니다.
-    # 예: db.save(study_log)
-    logging.info(f"새로운 공부 기록이 등록되었습니다: {study_log.subject}")
-    print(study_log)
-    return HTMLResponse(content="<div class='success-message'>✅ 공부 기록이 성공적으로 저장되었습니다!</div>", status_code=200)
+    return response
 
 
 @router.get("/items/{item_id}")
 def read_item(item_id: int, q: Union[str, None] = None):
     return {"item_id": item_id, "q": q}
+
+

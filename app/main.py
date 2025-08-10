@@ -5,6 +5,7 @@ import uvicorn as uvicorn
 from app.common.config import conf
 from database.conn import db
 from routes import index
+from common.config import Config
 def create_app():
     """
     앱 함수 실행
@@ -29,4 +30,4 @@ app = create_app()
 
 # 실행 파일을 여기로 했을 경우
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8080, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=Config.SERVER_PORT, reload=True)
