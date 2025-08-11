@@ -1,10 +1,10 @@
 from dataclasses import asdict
 from fastapi import FastAPI, Depends
 import uvicorn as uvicorn
-
+from database.conn import SQLAlchemy
 from app.common.config import conf
-from database.conn import db
-from routes import index
+from app.routes import index
+from fastapi.staticfiles import StaticFiles
 from common.config import Config
 def create_app():
     """
@@ -14,15 +14,21 @@ def create_app():
     c = conf()
     app = FastAPI()
     conf_dict = asdict(c)
+    db = SQLAlchemy()
     db.init_app(app, **conf_dict)
     db.create_tables()
-    # 데이터 베이스 이니셜라이즈
+
+    app.state.db = db
 
 
     # 라우터 정의
     app.include_router(index.router)
     # app.include_router(auth.router, tags=["Authentication"], prefix="/auth")
     # app.include_router(users.router, tags=["Users"], prefix="/api", dependencies=[Depends(API_KEY_HEADER)])
+
+    # css 마운트
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+
     return app
 
 

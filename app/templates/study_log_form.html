@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>매일 공부 기록</title>
+     <!--htmx-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.6/htmx.min.js" integrity="sha512-fzOjdYXF0WrjlPAGWmlpHv2PnJ1m7yP8QdWj1ORoM7Bc4xmKcDRBOXSOZ4Wedia0mjtGzXQX1f1Ah1HDHAWywg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         * {
@@ -228,20 +229,24 @@
             <div id="message-area"></div>
 
             <form hx-post="/submit-study" hx-target="#message-area" hx-swap="innerHTML"
-                hx-on::after-request="this.reset()">
+                  hx-on::after-request="this.reset()">
+
+                <!-- 공부 주제 -->
                 <div class="form-group">
                     <label for="subject">📖 공부 주제</label>
-                    <input type="text" id="subject" name="subject" placeholder="예: JavaScript 기초, 영어 회화" required>
+                    <input type="text" id="subject" name="subject" required
+                           value="JavaScript 기초">
                 </div>
 
+                <!-- 공부 시간 -->
                 <div class="form-group">
                     <label>⏰ 공부 시간</label>
                     <div class="time-inputs">
                         <div>
-                            <input type="time" name="start_time" placeholder="시작 시간" required>
+                            <input type="datetime-local" name="start_time" required>
                         </div>
                         <div>
-                            <input type="time" name="end_time" placeholder="종료 시간" required>
+                            <input type="datetime-local" name="end_time" required>
                         </div>
                     </div>
                 </div>
@@ -250,7 +255,7 @@
                     <label for="category">📂 카테고리</label>
                     <select id="category" name="category" required>
                         <option value="">카테고리 선택</option>
-                        <option value="programming">💻 프로그래밍</option>
+                        <option value="programming" selected>💻 프로그래밍</option>
                         <option value="language">🌍 외국어</option>
                         <option value="math">🔢 수학</option>
                         <option value="science">🔬 과학</option>
@@ -260,10 +265,11 @@
                     </select>
                 </div>
 
+                <!-- 난이도 -->
                 <div class="form-group">
                     <label>😤 난이도</label>
                     <div class="rating-group">
-                        <input type="radio" name="difficulty" value="1" id="diff1" style="display: none;">
+                        <input type="radio" name="difficulty" value="1" id="diff1" style="display: none;" checked>
                         <label for="diff1" class="rating-btn" onclick="selectRating('difficulty', 1)">😊 쉬움</label>
 
                         <input type="radio" name="difficulty" value="2" id="diff2" style="display: none;">
@@ -274,6 +280,7 @@
                     </div>
                 </div>
 
+                <!-- 이해도 -->
                 <div class="form-group">
                     <label>🎯 이해도</label>
                     <div class="rating-group">
@@ -283,7 +290,7 @@
                         <input type="radio" name="understanding" value="2" id="under2" style="display: none;">
                         <label for="under2" class="rating-btn" onclick="selectRating('understanding', 2)">😐 보통</label>
 
-                        <input type="radio" name="understanding" value="3" id="under3" style="display: none;">
+                        <input type="radio" name="understanding" value="3" id="under3" style="display: none;" checked>
                         <label for="under3" class="rating-btn" onclick="selectRating('understanding', 3)">😊 좋음</label>
 
                         <input type="radio" name="understanding" value="4" id="under4" style="display: none;">
@@ -291,25 +298,31 @@
                     </div>
                 </div>
 
+                <!-- 공부 내용 -->
                 <div class="form-group">
                     <label for="contents">📝 공부 내용</label>
-                    <textarea id="contents" name="contents" placeholder="오늘 공부한 내용을 자세히 적어보세요..." required></textarea>
+                    <textarea id="contents" name="contents" required>함수 선언 방식과 변수 스코프에 대해 학습함.</textarea>
                 </div>
 
+                <!-- 메모 -->
                 <div class="form-group">
                     <label for="memo">💭 메모 & 느낀점</label>
-                    <textarea id="memo" name="memo" placeholder="어려웠던 점, 새로 알게 된 점, 내일 할 일 등..."></textarea>
+                    <textarea id="memo" name="memo">let과 const의 차이를 명확히 이해함.</textarea>
                 </div>
 
+                <!-- 참고 자료 -->
                 <div class="form-group">
                     <label for="reference">🔗 참고 자료</label>
-                    <input type="url" id="reference" name="reference" placeholder="https://example.com (선택사항)">
+                    <input type="url" id="reference" name="reference"
+                           value="https://developer.mozilla.org/ko/docs/Web/JavaScript">
                 </div>
 
+                <!-- 제출 버튼 -->
                 <button type="submit" class="submit-btn">
                     ✅ 공부 기록 저장하기
                 </button>
             </form>
+
 
             <div class="study-list">
                 <h2 style="margin-bottom: 16px; color: #1f2937;">📋 최근 공부 기록</h2>

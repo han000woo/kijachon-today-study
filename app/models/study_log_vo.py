@@ -1,33 +1,23 @@
 from datetime import datetime
 from typing import Optional
+from pydantic import BaseModel
 from ..database.schema import StudyLog
 from ..database.schema import DifficultyLevel, UnderstandingLevel
 
 
-class StudyLogVO:
+class StudyLogVO(BaseModel):
     """
     공부 기록 폼에서 제출된 데이터를 담는 VO (Value Object)
     """
-
-    def __init__(self,
-                 subject: str,
-                 start_time: datetime,
-                 end_time: datetime,
-                 category: str,
-                 difficulty: int,
-                 understanding: int,
-                 contents: str,
-                 memo: Optional[str] = None,
-                 reference: Optional[str] = None):
-        self.subject = subject
-        self.start_time = start_time
-        self.end_time = end_time
-        self.category = category
-        self.difficulty = difficulty
-        self.understanding = understanding
-        self.contents = contents
-        self.memo = memo
-        self.reference = reference
+    subject: str
+    start_time: datetime
+    end_time: datetime
+    category: str
+    difficulty: int
+    understanding: int
+    contents: str
+    memo: Optional[str] = None
+    reference: Optional[str] = None
 
     def __repr__(self):
         return (f"StudyLog(subject='{self.subject}', "

@@ -44,4 +44,5 @@ def conf():
     :return:
     """
     config = dict(prod=ProdConfig(), local=LocalConfig())
+    print(config)
     return config.get(environ.get("API_ENV", "local"))
