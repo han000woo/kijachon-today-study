@@ -1,0 +1,19 @@
+# Vite 기본
+dist/
+node_modules/
+.env
+.env.local
+.vite/
+
+# 로그/캐시
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.cache/
+
+# IDE 관련
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

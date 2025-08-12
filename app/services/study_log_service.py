@@ -1,11 +1,20 @@
 # services/study_log_service.py
 # 비즈니스 로직을 처리하는 서비스 계층
 import logging
+
+from starlette.responses import JSONResponse
 from ..database.dao import study_dao
 from ..models.study_log_vo import StudyLogVO
-from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
+import random
 
+messages = [
+    "오늘도 훌륭해요! 꾸준함이 정말 멋져요 😊",
+    "멋져요! 오늘도 한 걸음 나아갔네요 👏",
+    "수고 많았어요. 당신의 노력이 빛나고 있어요 ✨",
+    "공부왕 등장! 오늘도 레벨업 성공 🎉",
+    "기록 완료! 성실함이 돋보여요 😊"
+]
 
 def create_study_log_entry(
         session : Session,
@@ -24,13 +33,18 @@ def create_study_log_entry(
         logging.info("DB 저장")
         logging.info(f"새로운 공부 기록이 등록되었습니다: {study_log_vo.subject}")
 
-        return HTMLResponse(content="<div class='success-message'>✅ 공부 기록이 성공적으로 저장되었습니다!</div>", status_code=200)
+        # 성공 응답
+        return JSONResponse(content={
+            "status": "success",
+            "message" : random.choice(messages)
+        }, status_code=200)
+
     except Exception as e:
         # 오류 발생 시 세션 롤백
         session.rollback()
         logging.error(f"공부 기록 저장 중 오류 발생: {e}")
-        # 오류 발생 시 사용자에게 보여줄 HTML 응답
-        return HTMLResponse(
-            content=f"<div class='error-message'>⚠️ 오류가 발생했습니다: {e}</div>",
-            status_code=500
-        )
+        # 실패 응답
+        return JSONResponse(content={
+            "status": "error",
+            "message": "시스템 에러"
+        }, status_code=500)

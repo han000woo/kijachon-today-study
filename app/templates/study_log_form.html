@@ -147,7 +147,7 @@
             transform: translateY(0);
         }
 
-        .success-message {
+        .toast-success {
             background: #10b981;
             color: white;
             padding: 16px;
@@ -215,6 +215,27 @@
                 min-width: 50px;
             }
         }
+
+.toast {
+  background-color: #333;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
     </style>
 </head>
 
@@ -226,7 +247,7 @@
         </div>
 
         <div class="form-container">
-            <div id="message-area"></div>
+            <div id="message-area" class="toast-container"></div>
 
             <form hx-post="/submit-study" hx-target="#message-area" hx-swap="innerHTML"
                   hx-on::after-request="this.reset()">
@@ -357,6 +378,19 @@
                 document.querySelectorAll('.rating-btn').forEach(btn => btn.classList.remove('active'));
             }
         });
+
+document.body.addEventListener('htmx:afterSwap', (e) => {
+    const toast = document.querySelector('#message-area .toast');
+    if (toast) {
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          toast.remove();
+        }, 500); // transition 시간 고려
+      }, 3000); // 3초 후 사라짐
+    }
+  });
     </script>
 </body>
 

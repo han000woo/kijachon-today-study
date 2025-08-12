@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="#">
+    <title>매일 공부 기록</title>
+    <script type="module" src="src/main.js"></script>
+    <link rel="stylesheet" href="src/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 매일 공부 기록</h1>
+            <p>오늘도 열심히 공부한 내용을 기록해보세요!</p>
+        </div>
+
+        <div class="form-container">
+
+            <form hx-post="/submit-study" 
+                  hx-swap="none" 
+                  hx-on::after-request="this.reset()">
+
+                <!-- 공부 주제 -->
+                <div class="form-group">
+                    <label for="subject">📖 공부 주제</label>
+                    <input type="text" id="subject" name="subject" required
+                           value="JavaScript 기초">
+                </div>
+
+                <!-- 공부 시간 -->
+                <div class="form-group">
+                    <label>⏰ 공부 시간</label>
+                    <div class="time-inputs">
+                        <div>
+                            <input id="start-time" name="start_time" type="text" required />
+                        </div>
+                        <div>
+                            <input id="end-time" name="end_time" type="text" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">📂 카테고리</label>
+                    <select id="category" name="category" required>
+                        <option value="">카테고리 선택</option>
+                        <option value="programming" selected>💻 프로그래밍</option>
+                        <option value="language">🌍 외국어</option>
+                        <option value="math">🔢 수학</option>
+                        <option value="science">🔬 과학</option>
+                        <option value="business">💼 비즈니스</option>
+                        <option value="design">🎨 디자인</option>
+                        <option value="other">📝 기타</option>
+                    </select>
+                </div>
+
+                <!-- 난이도 -->
+                <div class="form-group">
+                    <label>😤 난이도</label>
+                    <div class="rating-group">
+                        <input type="radio" name="difficulty" value="1" id="diff1" style="display: none;" checked>
+                        <label for="diff1" class="rating-btn" onclick="selectRating('difficulty', 1)">😊 쉬움</label>
+
+                        <input type="radio" name="difficulty" value="2" id="diff2" style="display: none;">
+                        <label for="diff2" class="rating-btn" onclick="selectRating('difficulty', 2)">🤔 보통</label>
+
+                        <input type="radio" name="difficulty" value="3" id="diff3" style="display: none;">
+                        <label for="diff3" class="rating-btn" onclick="selectRating('difficulty', 3)">😰 어려움</label>
+                    </div>
+                </div>
+
+                <!-- 이해도 -->
+                <div class="form-group">
+                    <label>🎯 이해도</label>
+                    <div class="rating-group">
+                        <input type="radio" name="understanding" value="1" id="under1" style="display: none;">
+                        <label for="under1" class="rating-btn" onclick="selectRating('understanding', 1)">😕 부족</label>
+
+                        <input type="radio" name="understanding" value="2" id="under2" style="display: none;">
+                        <label for="under2" class="rating-btn" onclick="selectRating('understanding', 2)">😐 보통</label>
+
+                        <input type="radio" name="understanding" value="3" id="under3" style="display: none;" checked>
+                        <label for="under3" class="rating-btn" onclick="selectRating('understanding', 3)">😊 좋음</label>
+
+                        <input type="radio" name="understanding" value="4" id="under4" style="display: none;">
+                        <label for="under4" class="rating-btn" onclick="selectRating('understanding', 4)">🤩 완벽</label>
+                    </div>
+                </div>
+
+                <!-- 공부 내용 -->
+                <div class="form-group">
+                    <label for="contents">📝 공부 내용</label>
+                    <textarea id="contents" name="contents" required>함수 선언 방식과 변수 스코프에 대해 학습함.</textarea>
+                </div>
+
+                <!-- 메모 -->
+                <div class="form-group">
+                    <label for="memo">💭 메모 & 느낀점</label>
+                    <textarea id="memo" name="memo">let과 const의 차이를 명확히 이해함.</textarea>
+                </div>
+
+                <!-- 참고 자료 -->
+                <div class="form-group">
+                    <label for="reference">🔗 참고 자료</label>
+                    <input type="url" id="reference" name="reference"
+                           value="https://developer.mozilla.org/ko/docs/Web/JavaScript">
+                </div>
+
+                <!-- 제출 버튼 -->
+                <button type="submit" class="submit-btn">
+                    ✅ 공부 기록 저장하기
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        const startInput = document.getElementById('start-time');
+        const endInput = document.getElementById('end-time');
+
+        document.addEventListener("DOMContentLoaded", () => {
+          const startTimePicker = new TimepickerUI(startInput);
+          startTimePicker.create();
+
+          const endTimePicker = new TimepickerUI(endInput);
+          endTimePicker.create();
+          endTimePicker.setValue(get_now_time().trim());
+        });
+
+        function selectRating(type, value) {
+            // 해당 그룹의 모든 버튼에서 active 클래스 제거
+            const buttons = document.querySelectorAll(`input[name="${type}"] + label`);
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // 선택된 버튼에 active 클래스 추가
+            const selectedButton = document.querySelector(`#${type === 'difficulty' ? 'diff' : 'under'}${value} + label`);
+            selectedButton.classList.add('active');
+
+            // 라디오 버튼 체크
+            document.querySelector(`#${type === 'difficulty' ? 'diff' : 'under'}${value}`).checked = true;
+        }
+
+        // HTMX 이벤트 리스너
+        document.body.addEventListener('htmx:afterRequest', function (evt) {
+            if (evt.detail.xhr.status === 200 && evt.detail.pathInfo.requestPath === '/submit-study') {
+
+                // 평가 버튼 초기화
+                document.querySelectorAll('.rating-btn').forEach(btn => btn.classList.remove('active'));
+            }
+        });
+
+        document.body.addEventListener('htmx:afterRequest', (e) => {
+          try {
+            const xhr = e.detail.xhr;
+            const response = JSON.parse(xhr.responseText);
+            
+            const message = response.message || "알 수 없는 응답입니다.";
+            const status = response.status || "info";
+        
+            let backgroundColor = "#2196F3"; // 기본: 파랑
+            if (status === "success") backgroundColor = "#4CAF50";
+            else if (status === "error") backgroundColor = "#f44336";
+        
+            Toastify({
+              text: message,
+              duration: 4000,
+              gravity: "top",
+              position: "center",
+              style: {
+                background: backgroundColor,
+                color: "#fff"
+              }
+            }).showToast();
+          } catch (err) {
+            console.error("응답 처리 중 오류:", err);
+          }
+        });
+        
+    </script>
+</body>
+
+</html>

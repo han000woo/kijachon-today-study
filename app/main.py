@@ -1,6 +1,8 @@
 from dataclasses import asdict
 from fastapi import FastAPI, Depends
 import uvicorn as uvicorn
+from fastapi.middleware.cors import CORSMiddleware
+
 from database.conn import SQLAlchemy
 from app.common.config import conf
 from app.routes import index
@@ -19,6 +21,15 @@ def create_app():
     db.create_tables()
 
     app.state.db = db
+
+    # CORS 설정 추가
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],  # 프론트엔드 주소
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
     # 라우터 정의

@@ -1,0 +1,20 @@
+{
+  "name": "kijachon-study-log",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
+  },
+  "dependencies": {
+    "htmx": "^0.0.2",
+    "htmx.org": "^2.0.6",
+    "timepicker-ui": "^3.0.1",
+    "toastify-js": "^1.12.0"
+  }
+}
