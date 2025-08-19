@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매일 공부 기록</title>
+    <!--htmx-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.6/htmx.min.js" integrity="sha512-fzOjdYXF0WrjlPAGWmlpHv2PnJ1m7yP8QdWj1ORoM7Bc4xmKcDRBOXSOZ4Wedia0mjtGzXQX1f1Ah1HDHAWywg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="/css/style.css">
+    <!--toastify-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 24px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .form-container {
+            padding: 24px 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+            background: #fafafa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            background: white;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .rating-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .rating-btn {
+            flex: 1;
+            min-width: 60px;
+            padding: 8px 12px;
+            border: 2px solid #e5e7eb;
+            background: #fafafa;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .rating-btn:hover {
+            border-color: #4f46e5;
+            background: #f0f0ff;
+        }
+
+        .rating-btn.active {
+            border-color: #4f46e5;
+            background: #4f46e5;
+            color: white;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .toast-success {
+            background: #10b981;
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .study-list {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 2px solid #f3f4f6;
+        }
+
+        .study-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid #4f46e5;
+        }
+
+        .study-item h3 {
+            color: #1f2937;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .study-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .study-content {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .time-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .rating-group {
+                justify-content: center;
+            }
+
+            .rating-btn {
+                min-width: 50px;
+            }
+        }
+
+.toast {
+  background-color: #333;
+  color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📚 매일 공부 기록</h1>
+        <p>오늘도 열심히 공부한 내용을 기록해보세요!</p>
+    </div>
+
+    <div class="form-container">
+
+        <form hx-post="/submit-study"
+              hx-swap="none"
+              hx-on::after-request="handleResponse(event)">
+
+            <!-- 공부 주제 -->
+            <div class="form-group">
+                <label for="subject">📖 공부 주제</label>
+                <input type="text" id="subject" name="subject" required
+                       value="JavaScript 기초">
+            </div>
+
+            <!-- 공부 시간 -->
+            <div class="form-group">
+                <label>⏰ 공부 시간</label>
+                <div class="time-inputs">
+                    <div>
+                        <input type="datetime-local" name="startTime" required>
+                    </div>
+                    <div>
+                        <input type="datetime-local" name="endTime" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="category">📂 카테고리</label>
+                <select id="category" name="category" required>
+                    <option value="">카테고리 선택</option>
+                    <option value="programming" selected>💻 프로그래밍</option>
+                    <option value="language">🌍 외국어</option>
+                    <option value="math">🔢 수학</option>
+                    <option value="science">🔬 과학</option>
+                    <option value="business">💼 비즈니스</option>
+                    <option value="design">🎨 디자인</option>
+                    <option value="other">📝 기타</option>
+                </select>
+            </div>
+
+            <!-- 난이도 -->
+            <div class="form-group">
+                <label>😤 난이도</label>
+                <div class="rating-group">
+                    <input type="radio" name="difficulty" value="1" id="diff1" style="display: none;" checked>
+                    <label for="diff1" class="rating-btn" onclick="selectRating('difficulty', 1)">😊 쉬움</label>
+
+                    <input type="radio" name="difficulty" value="2" id="diff2" style="display: none;">
+                    <label for="diff2" class="rating-btn" onclick="selectRating('difficulty', 2)">🤔 보통</label>
+
+                    <input type="radio" name="difficulty" value="3" id="diff3" style="display: none;">
+                    <label for="diff3" class="rating-btn" onclick="selectRating('difficulty', 3)">😰 어려움</label>
+                </div>
+            </div>
+
+            <!-- 이해도 -->
+            <div class="form-group">
+                <label>🎯 이해도</label>
+                <div class="rating-group">
+                    <input type="radio" name="understanding" value="1" id="under1" style="display: none;">
+                    <label for="under1" class="rating-btn" onclick="selectRating('understanding', 1)">😕 부족</label>
+
+                    <input type="radio" name="understanding" value="2" id="under2" style="display: none;">
+                    <label for="under2" class="rating-btn" onclick="selectRating('understanding', 2)">😐 보통</label>
+
+                    <input type="radio" name="understanding" value="3" id="under3" style="display: none;" checked>
+                    <label for="under3" class="rating-btn" onclick="selectRating('understanding', 3)">😊 좋음</label>
+
+                    <input type="radio" name="understanding" value="4" id="under4" style="display: none;">
+                    <label for="under4" class="rating-btn" onclick="selectRating('understanding', 4)">🤩 완벽</label>
+                </div>
+            </div>
+
+            <!-- 공부 내용 -->
+            <div class="form-group">
+                <label for="contents">📝 공부 내용</label>
+                <textarea id="contents" name="contents" required>함수 선언 방식과 변수 스코프에 대해 학습함.</textarea>
+            </div>
+
+            <!-- 메모 -->
+            <div class="form-group">
+                <label for="memo">💭 메모 & 느낀점</label>
+                <textarea id="memo" name="memo">let과 const의 차이를 명확히 이해함.</textarea>
+            </div>
+
+            <!-- 참고 자료 -->
+            <div class="form-group">
+                <label for="reference">🔗 참고 자료</label>
+                <input type="url" id="reference" name="reference"
+                       value="https://developer.mozilla.org/ko/docs/Web/JavaScript">
+            </div>
+
+            <!-- 제출 버튼 -->
+            <button type="submit" class="submit-btn">
+                ✅ 공부 기록 저장하기
+            </button>
+        </form>
+
+
+
+    </div>
+</div>
+
+<script>
+    const Toastify = window.Toastify;
+
+    function selectRating(type, value) {
+        // 해당 그룹의 모든 버튼에서 active 클래스 제거
+        const buttons = document.querySelectorAll(`input[name="${type}"] + label`);
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // 선택된 버튼에 active 클래스 추가
+        const selectedButton = document.querySelector(`#${type === 'difficulty' ? 'diff' : 'under'}${value} + label`);
+        selectedButton.classList.add('active');
+
+        // 라디오 버튼 체크
+        document.querySelector(`#${type === 'difficulty' ? 'diff' : 'under'}${value}`).checked = true;
+    }
+
+    function handleResponse(event) {
+        const xhr = event.detail.xhr;
+        const response = JSON.parse(xhr.responseText);
+
+        const baseStyle = {
+            background: xhr.status === 200 ? 'green' : 'red',
+            minWidth: '100px',  // 최소 가로 길이
+            maxWidth: '300px',  // 최대 가로 길이
+            padding: '10px 20px', // 안쪽 여백 조정
+            fontSize: '16px',    // 글자 크기 조정
+        };
+
+        Toastify({
+            text: response.message,
+            duration: 3000,
+            gravity: 'top',
+            position: 'right',
+            style: baseStyle,
+        }).showToast();
+    }
+</script>
+</body>
+
+</html>
