@@ -1,4 +1,4 @@
-package com.example.study_log.entity;
+package com.example.study_log.enums;
 
 import lombok.Getter;
 

@@ -1,8 +1,7 @@
-package com.example.study_log.entity;
+package com.example.study_log.enums;
 
 import lombok.Getter;
 
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 @Getter

@@ -39,3 +39,20 @@ spring:
       charset: UTF-8
       enabled: true
       force: true
+
+kakao:
+  client-id: b16cd847c647f4d450728cb753a9e985
+  redirect-uri: http://localhost:8080/login/oauth/kakao
+  client-secret: UYdYdOzzj9zfBLbOEQ0D7utsJ4JcYMJg
+
+jwt:
+  access:
+    token:
+      expiration:
+        seconds: 3600
+  refresh:
+    token:
+      expiration:
+        seconds: 604800
+  token:
+    secret-key: itsepguyitsepguyitsepgyitsitsits

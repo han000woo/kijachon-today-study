@@ -1,5 +1,7 @@
 package com.example.study_log.entity;
 
+import com.example.study_log.enums.DifficultyLevel;
+import com.example.study_log.enums.UnderstandingLevel;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -7,7 +9,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

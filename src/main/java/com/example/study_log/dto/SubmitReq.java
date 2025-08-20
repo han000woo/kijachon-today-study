@@ -1,8 +1,8 @@
 package com.example.study_log.dto;
 
-import com.example.study_log.entity.DifficultyLevel;
+import com.example.study_log.enums.DifficultyLevel;
 import com.example.study_log.entity.StudyLog;
-import com.example.study_log.entity.UnderstandingLevel;
+import com.example.study_log.enums.UnderstandingLevel;
 import lombok.Data;
 
 import java.time.LocalDateTime;
